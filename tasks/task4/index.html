@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Граф с кратчайшим путем</title>
+    <link
+      href="https://unpkg.com/vis-network/styles/vis-network.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <h1>Поиск кратчайшего пути в графе</h1>
+    <div id="mynetwork"></div>
+    <div class="controls">
+      <input type="text" id="nodeId" placeholder="ID узла" />
+      <button onclick="addNode()">Добавить узел</button>
+      <input type="text" id="fromNode" placeholder="От узла" />
+      <input type="text" id="toNode" placeholder="К узлу" />
+      <input type="number" id="edgeWeight" placeholder="Вес ребра" />
+      <button onclick="addEdge()">Добавить ребро</button>
+      <button onclick="startShortestPath()">Найти кратчайший путь</button>
+    </div>
+    <div id="log"></div>
+  </body>
+</html>

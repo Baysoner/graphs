@@ -1,0 +1,41 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+header {
+  background-color: #007acc;
+  color: white;
+  text-align: center;
+  padding: 1em 0;
+}
+
+main {
+  padding: 2em;
+  text-align: center;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 3em 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-size: 1.2em;
+  color: #007acc;
+  border: 2px solid #007acc;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+}
+
+nav ul li a:hover {
+  background-color: #007acc;
+  color: white;
+}

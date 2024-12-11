@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Транспортная сеть - Максимальный поток</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <h1>Транспортная сеть - Максимальный поток</h1>
+    <div id="mynetwork"></div>
+
+    <div class="controls">
+      <input type="text" id="nodeId" placeholder="ID узла" />
+      <button onclick="addNode()">
+        <i class="fas fa-plus"></i> Добавить узел
+      </button>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="fromNode" placeholder="ID начального узла" />
+      <input type="text" id="toNode" placeholder="ID конечного узла" />
+      <input type="number" id="edgeWeight" placeholder="Вес ребра" />
+      <button onclick="addEdge()">
+        <i class="fas fa-link"></i> Добавить ребро
+      </button>
+    </div>
+
+    <div class="controls">
+      <button onclick="removeSelected()">
+        <i class="fas fa-trash"></i> Удалить выбранное
+      </button>
+      <button onclick="saveGraph()">
+        <i class="fas fa-save"></i> Сохранить граф
+      </button>
+      <div class="file-input">
+        <input type="file" id="fileInput" accept=".json" />
+        <button onclick="loadGraph()">
+          <i class="fas fa-upload"></i> Загрузить граф
+        </button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input
+        type="number"
+        id="stepDelay"
+        placeholder="Задержка (мс)"
+        value="1000"
+      />
+      <button onclick="startMaxFlow()">
+        <i class="fas fa-tachometer-alt"></i> Найти максимальный поток
+      </button>
+    </div>
+
+    <div id="log"></div>
+    <div id="steps">
+      <h2>Шаги алгоритма</h2>
+      <p id="stepDescription"></p>
+    </div>
+    <table id="adjacencyMatrix"></table>
+  </body>
+</html>

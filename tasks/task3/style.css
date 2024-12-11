@@ -1,0 +1,87 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0; /* Убираем отступы */
+  box-sizing: border-box; /* Включаем расчёт размера с учётом отступов */
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin: 20px 0; /* Добавляем отступ сверху и снизу */
+}
+
+#mynetwork {
+  width: 100%;
+  height: 60vh; /* Высота в процентах от высоты окна браузера */
+  border: 1px solid lightgray;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap; /* Позволяем кнопкам и полям переноситься на новую строку */
+  justify-content: center;
+  gap: 10px; /* Расстояние между элементами */
+  margin-bottom: 20px;
+}
+
+.controls input {
+  flex: 1 1 auto; /* Гибкость размера для адаптации */
+  min-width: 150px; /* Минимальная ширина для удобства ввода */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Учитываем внутренние отступы */
+}
+
+.controls button {
+  flex: 0 1 auto; /* Кнопки не растягиваются */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.controls button:hover {
+  background-color: #218838;
+}
+
+#log {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  height: 20vh; /* Высота в процентах от окна браузера */
+  overflow-y: auto;
+}
+
+#adjacencyMatrix {
+  margin-top: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#adjacencyMatrix td,
+#adjacencyMatrix th {
+  border: 1px solid #ccc;
+  padding: 5px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  /* Адаптив для маленьких экранов */
+  .controls {
+    flex-direction: column; /* Переключаемся на вертикальную компоновку */
+  }
+
+  .controls input,
+  .controls button {
+    width: 100%; /* Растягиваем элементы на всю ширину контейнера */
+  }
+}
