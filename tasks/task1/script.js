@@ -3,35 +3,92 @@ let edges = new vis.DataSet([]);
 let container = document.getElementById("mynetwork");
 let data = { nodes: nodes, edges: edges };
 
-// Настройки сети с стрелками на рёбрах
+// Настройки сети
 let options = {
+  physics: {
+    enabled: true,
+    stabilization: {
+      iterations: 200,
+    },
+  },
   edges: {
     arrows: {
-      to: { enabled: true, scaleFactor: 1 },
+      to: { enabled: true, scaleFactor: 1.2 },
     },
-    smooth: false,
-    width: 1,
+    smooth: true,
+    color: {
+      color: "#848484",
+      highlight: "#ff5733",
+    },
+    font: {
+      size: 14,
+      align: "middle",
+      color: "#333",
+    },
+  },
+  nodes: {
+    shape: "circle",
+    font: {
+      color: "#ffffff",
+    },
+    color: {
+      border: "#000",
+      background: "#007bff",
+      highlight: {
+        border: "#ff5733",
+        background: "#ffcccb",
+      },
+      hover: {
+        border: "#333",
+        background: "#66ccff",
+      },
+    },
+    size: 30, // Фиксированный размер узлов
+  },
+  interaction: {
+    hover: true,
+    navigationButtons: true,
+    keyboard: true,
   },
 };
 
 let network = new vis.Network(container, data, options);
 
+// Обновление стиля узлов при добавлении
 function addNode() {
   const nodeId = document.getElementById("nodeId").value;
   if (nodeId) {
-    nodes.add({ id: nodeId, label: `Узел ${nodeId}` });
+    nodes.add({ id: nodeId, label: `Узел ${nodeId}`, value: 30 }); // Устанавливаем фиксированный размер узла
     document.getElementById("nodeId").value = "";
     updateAdjacencyMatrix();
   }
 }
 
+// Автоматическое обновление значений для узлов
+function updateNodeDegrees() {
+  const degrees = {};
+  edges.get().forEach((edge) => {
+    degrees[edge.from] = (degrees[edge.from] || 0) + 1;
+    degrees[edge.to] = (degrees[edge.to] || 0) + 1;
+  });
+
+  nodes.get().forEach((node) => {
+    // Убираем зависимость от количества рёбер
+    nodes.update({
+      id: node.id,
+      value: 30, // Фиксированный размер
+    });
+  });
+}
+
 function addEdge() {
   const fromNode = document.getElementById("fromNode").value;
   const toNode = document.getElementById("toNode").value;
-  const edgeWeight = document.getElementById("edgeWeight").value;
+  const edgeWeight = document.getElementById("edgeWeight").value || "1";
 
   if (fromNode && toNode) {
     edges.add({ from: fromNode, to: toNode, label: edgeWeight });
+    updateNodeDegrees();
     document.getElementById("fromNode").value = "";
     document.getElementById("toNode").value = "";
     document.getElementById("edgeWeight").value = "";
@@ -87,6 +144,7 @@ function generateAdjacencyMatrix(nodeArray, edgeArray) {
   return matrix;
 }
 
+// Вызов updateNodeDegrees после загрузки графа
 function loadGraph() {
   const fileInput = document.getElementById("fileInput");
   const file = fileInput.files[0];
@@ -97,7 +155,6 @@ function loadGraph() {
       nodes.clear();
       edges.clear();
 
-      // Восстановление узлов и рёбер из матрицы
       matrix.forEach((row, rowIndex) => {
         nodes.add({ id: rowIndex.toString(), label: `Узел ${rowIndex}` });
         row.forEach((value, colIndex) => {
@@ -105,12 +162,13 @@ function loadGraph() {
             edges.add({
               from: rowIndex.toString(),
               to: colIndex.toString(),
-              label: value,
+              label: value.toString(),
             });
           }
         });
       });
 
+      updateNodeDegrees();
       updateAdjacencyMatrix();
     };
     reader.readAsText(file);
@@ -125,8 +183,8 @@ async function startDFS() {
   async function dfs(nodeId) {
     if (visited.has(nodeId)) return;
     visited.add(nodeId);
-    highlightNode(nodeId);
-    logArea.innerHTML += `Посещен узел: ${nodeId}<br>`;
+    highlightNode(nodeId, "#ff5733"); // Выделяем текущий узел
+    logArea.innerHTML += `Посещен узел: ${nodeId}\n`;
     await sleep(delay);
 
     const neighbors = edges
@@ -134,8 +192,12 @@ async function startDFS() {
       .filter((edge) => edge.from === nodeId || edge.to === nodeId);
     for (const edge of neighbors) {
       const nextNode = edge.from === nodeId ? edge.to : edge.from;
-      await dfs(nextNode);
+      if (!visited.has(nextNode)) {
+        await dfs(nextNode);
+      }
     }
+
+    highlightNode(nodeId, "#007bff"); // Возвращаем стандартный цвет узла
   }
 
   const startNode = nodes.get()[0]; // Начинаем с первого узла
@@ -154,8 +216,8 @@ async function startBFS() {
   if (startNode) {
     queue.push(startNode.id);
     visited.add(startNode.id);
-    highlightNode(startNode.id);
-    logArea.innerHTML += `Посещен узел: ${startNode.id}<br>`;
+    highlightNode(startNode.id, "#ff5733"); // Выделяем текущий узел
+    logArea.innerHTML += `Посещен узел: ${startNode.id}\n`;
   }
 
   while (queue.length > 0) {
@@ -170,16 +232,21 @@ async function startBFS() {
       if (!visited.has(nextNode)) {
         visited.add(nextNode);
         queue.push(nextNode);
-        highlightNode(nextNode);
-        logArea.innerHTML += `Посещен узел: ${nextNode}<br>`;
+        highlightNode(nextNode, "#ff5733"); // Выделяем текущий узел
+        logArea.innerHTML += `Посещен узел: ${nextNode}\n`;
       }
     }
+
+    highlightNode(nodeId, "#007bff"); // Возвращаем стандартный цвет узла
   }
 }
 
-function highlightNode(nodeId) {
-  network.selectNodes([nodeId]);
-  setTimeout(() => network.selectNodes([]), 500);
+function highlightNode(nodeId, color = "#ff5733") {
+  const node = nodes.get(nodeId);
+  if (node) {
+    nodes.update({ id: nodeId, color: { background: color } });
+    network.fit({ nodes: [nodeId] }); // Фокусируемся на выделенном узле
+  }
 }
 
 function sleep(ms) {
