@@ -16,15 +16,22 @@ const options = {
     size: 20,
     font: { size: 15, color: "#000" },
   },
-  physics: { enabled: false },
+  physics: {
+    enabled: true, // Включение физики для автоматической расстановки узлов
+    solver: "forceAtlas2Based", // Метод для раскладки
+    stabilization: { iterations: 1000, updateInterval: 25 }, // Параметры стабилизации
+  },
 };
 const network = new vis.Network(container, data, options);
 
-// Добавление узла
+// Добавление узла с случайным положением
 function addNode() {
   const nodeId = document.getElementById("nodeId").value;
   if (nodeId) {
-    nodes.add({ id: nodeId, label: `Узел ${nodeId}` });
+    // Генерация случайных координат для узла
+    const x = Math.floor(Math.random() * 500); // Случайная координата X
+    const y = Math.floor(Math.random() * 500); // Случайная координата Y
+    nodes.add({ id: nodeId, label: `Узел ${nodeId}`, x: x, y: y });
     document.getElementById("nodeId").value = "";
   }
 }
